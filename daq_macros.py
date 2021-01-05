@@ -1552,20 +1552,19 @@ def snakeRasterNormal(rasterReqID,grain=""):
                                                           reqObj))
       spotFindThread.start()
       spotFindThreadList.append(spotFindThread)
-  [thread.join() for thread in spotFindThreadList]
-
 
   det_lib.detector_stop_acquire()
   det_lib.detector_wait()  
   logger.info('detector finished waiting')
   if (daq_utils.beamline == "amxz"):  
     setPvDesc("zebraReset",1)      
-  
       
 #I guess this starts the gather loop
   logger.info("moving to raster start")
   beamline_lib.mvaDescriptor("sampleX",rasterStartX,"sampleY",rasterStartY,"sampleZ",rasterStartZ)
-  logger.info("done moving to raster start")  
+  logger.info("done moving to raster start")
+  
+  [thread.join() for thread in spotFindThreadList]
   if (procFlag):
     rasterTimeout = 300
     timerCount = 0
@@ -1577,10 +1576,11 @@ def snakeRasterNormal(rasterReqID,grain=""):
       if (timerCount>rasterTimeout):
         logger.error("Raster timeout!")
         break
-      time.sleep(1)
       logger.info(str(processedRasterRowCount) + "/" + str(rowCount))      
       if (processedRasterRowCount == rowCount):
-        break
+        break 
+      time.sleep(1)
+
     rasterResult = generateGridMap(rasterRequest)     
     rasterRequest["request_obj"]["rasterDef"]["status"] = 2
     protocol = reqObj["protocol"]
