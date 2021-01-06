@@ -1601,7 +1601,6 @@ def snakeRasterNormal(rasterReqID,grain=""):
   elif (autoRasterFlag):
     daq_lib.setGovRobot('DI')
   if (procFlag):
-    time.sleep(2.0)    
     daq_lib.set_field("xrecRasterFlag",rasterRequest["uid"])
   if (daq_utils.beamline == "fmx"):
     setPvDesc("sampleProtect",1)        
